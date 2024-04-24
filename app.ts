@@ -2,6 +2,20 @@ import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
 import { existsSync } from "https://deno.land/std@0.223.0/fs/exists.ts";
 
+function notFoundHandler(request: Request): Response {
+  return new Response(
+    `
+    <h1>404 - Not Found</h1>
+    <code>${request.url}</code>`,
+    {
+      status: 404,
+      headers: {
+        "content-type": "text/html",
+      },
+    },
+  );
+}
+
 function staticHandler(
   path: string,
   options?: { index?: string },
@@ -170,7 +184,7 @@ export class App {
       }
     }
 
-    return new Response(`404 - Not Found\n${url.pathname}`);
+    return notFoundHandler(request); // new Response(`404 - Not Found\n${url.pathname}`);
   };
 
   // static = (route: string, path: string, opts: { index?: string } = {}) =>
