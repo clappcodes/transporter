@@ -14,5 +14,8 @@
     "npm",
     "bundle"
   ],
-  "imports": { "@std/fs": "jsr:@std/fs@^0.223.0" }
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^0.223.0",
+    "@std/fs": "jsr:@std/fs@^0.223.0"
+  }
 }
