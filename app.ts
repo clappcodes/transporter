@@ -31,18 +31,20 @@ function notFoundHandler(request: Request): Response {
 }
 
 function staticHandler(
-  path: string,
+  path?: string,
   options?: { index?: string },
 ): Handler["fetch"] {
   return async function staticHandler(
     request: Request,
   ): Promise<Response | undefined> {
     // @ts-ignore ?
-    const url = new URL(request.currentUrl, import.meta.url);
+    const url = new URL(request.currentUrl); // , import.meta.url
 
     path = path || ".";
     options = options || {};
     options.index = options?.index || "index.html";
+
+    console.log("staticHandler", url.pathname, path, options?.index);
 
     const headers = {
       "cache-control": "no-cache",
@@ -88,7 +90,25 @@ function staticHandler(
       });
     } else if (existsSync(path + url.pathname, { isFile: true })) {
       return Deno.readFile(path + url.pathname)
-        .then((res) => new Response(res, { headers }))
+        .then((res) =>
+          new Response(res, {
+            headers: {
+              ...headers,
+              "content-type":
+                url.pathname.endsWith(".js") || url.pathname.endsWith(".map")
+                  ? "application/javascript"
+                  : url.pathname.endsWith(".css")
+                  ? "text/css"
+                  : url.pathname.endsWith(".html")
+                  ? "text/html"
+                  : url.pathname.endsWith(".json")
+                  ? "application/json"
+                  : url.pathname.endsWith(".ico")
+                  ? "image/x-icon"
+                  : "text/plain",
+            },
+          })
+        )
         .catch((err) => new Response(err));
     } else {
       if (url.pathname.endsWith(".ico")) {
