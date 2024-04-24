@@ -1,13 +1,10 @@
+<script>
+	var DEBUG = true;
+</script>
 <script type="module">
-	self.DEBUG = true;
-	const assign = (exports) => (
-		console.log(Object.keys(exports)), Object.assign(globalThis, exports)
-	);
-	import("/main.transporter.ts").then(assign);
-	import("/text.transporter.ts").then(assign);
+	import { textStream } from "./examples/text.ts";
 
-	// import("/transporter.util.ts").then(assign);
-	import("/client.ts").then(assign);
+	textStream();
 </script>
 <style>
 	body {

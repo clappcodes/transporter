@@ -8,19 +8,19 @@ export const makeOptions = (version: string): BuildOptions => ({
   },
   typeCheck: false,
   declaration: "separate",
-
   esModule: true,
   entryPoints: [
     "./transporter.ts",
     "./utils.ts",
-    "./client.ts",
     // "./server.ts",
     // "./app.ts",
     // "./handlers.ts",
   ],
   importMap: "./deno.json",
   outDir: "./npm",
+
   mappings: {},
+
   package: {
     name: "@clappcodes/transporter",
     version,

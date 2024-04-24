@@ -4,7 +4,6 @@
     "specifiers": {
       "jsr:@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@0.10.3",
       "jsr:@luca/esbuild-deno-loader@^0.10.3": "jsr:@luca/esbuild-deno-loader@0.10.3",
-      "jsr:@lukeed/fetch-event-stream@^0.1.5": "jsr:@lukeed/fetch-event-stream@0.1.5",
       "jsr:@std/assert": "jsr:@std/assert@0.222.1",
       "jsr:@std/assert@^0.213.1": "jsr:@std/assert@0.213.1",
       "jsr:@std/assert@^0.222.1": "jsr:@std/assert@0.222.1",
@@ -12,11 +11,9 @@
       "jsr:@std/fmt": "jsr:@std/fmt@0.222.1",
       "jsr:@std/fmt@^0.220.1": "jsr:@std/fmt@0.220.1",
       "jsr:@std/fmt@^0.222.1": "jsr:@std/fmt@0.222.1",
-      "jsr:@std/http@^0.221.0": "jsr:@std/http@0.221.0",
       "jsr:@std/json@^0.213.1": "jsr:@std/json@0.213.1",
       "jsr:@std/jsonc@0.213": "jsr:@std/jsonc@0.213.1",
       "jsr:@std/path@0.213": "jsr:@std/path@0.213.1",
-      "jsr:@std/streams@^0.221.0": "jsr:@std/streams@0.221.0",
       "jsr:@std/testing": "jsr:@std/testing@0.222.1",
       "npm:@clappcodes/transporter": "npm:@clappcodes/transporter@0.1.1",
       "npm:esbuild@0.20.2": "npm:esbuild@0.20.2"
@@ -28,13 +25,6 @@
           "jsr:@std/encoding@0.213",
           "jsr:@std/jsonc@0.213",
           "jsr:@std/path@0.213"
-        ]
-      },
-      "@lukeed/fetch-event-stream@0.1.5": {
-        "integrity": "50fe145b95e6ead49584c4f00dbb266c34a572e2ac97a924463f567887cd99ce",
-        "dependencies": [
-          "jsr:@std/http@^0.221.0",
-          "jsr:@std/streams@^0.221.0"
         ]
       },
       "@std/assert@0.213.1": {
@@ -61,9 +51,6 @@
       "@std/fmt@0.222.1": {
         "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
       },
-      "@std/http@0.221.0": {
-        "integrity": "35fdcfed1501f2052338bf7ffba5d66f1455f2fffc01e9d7cf13eed548fffbaa"
-      },
       "@std/json@0.213.1": {
         "integrity": "f572b1de605d07c4a5602445dac54bfc51b1fb87a3710a17aed2608bfca54e68"
       },
@@ -79,9 +66,6 @@
         "dependencies": [
           "jsr:@std/assert@^0.213.1"
         ]
-      },
-      "@std/streams@0.221.0": {
-        "integrity": "47f2f74634b47449277c0ee79fe878da4424b66bd8975c032e3afdca88986e61"
       },
       "@std/testing@0.222.1": {
         "integrity": "7be5c3ef185d31883116824a2dd604eb6f12a56fd5ed80489c7c696b2a76c5bc",
@@ -383,6 +367,7 @@
     "https://deno.land/std@0.222.1/path/windows/resolve.ts": "8dae1dadfed9d46ff46cc337c9525c0c7d959fb400a6308f34595c45bdca1972",
     "https://deno.land/std@0.222.1/path/windows/to_file_url.ts": "40e560ee4854fe5a3d4d12976cef2f4e8914125c81b11f1108e127934ced502e",
     "https://deno.land/std@0.222.1/path/windows/to_namespaced_path.ts": "4ffa4fb6fae321448d5fe810b3ca741d84df4d7897e61ee29be961a6aac89a4c",
+    "https://deno.land/std@0.223.0/fs/exists.ts": "3d38cb7dcbca3cf313be343a7b8af18a87bddb4b5ca1bd2314be12d06533b50f",
     "https://deno.land/x/code_block_writer@11.0.3/mod.ts": "2c3448060e47c9d08604c8f40dee34343f553f33edcdfebbf648442be33205e5",
     "https://deno.land/x/code_block_writer@11.0.3/utils/string_utils.ts": "60cb4ec8bd335bf241ef785ccec51e809d576ff8e8d29da43d2273b69ce2a6ff",
     "https://deno.land/x/code_block_writer@12.0.0/mod.ts": "2c3448060e47c9d08604c8f40dee34343f553f33edcdfebbf648442be33205e5",
@@ -486,12 +471,5 @@
     "https://deno.land/x/wasmbuild@0.14.1/loader.ts": "d98d195a715f823151cbc8baa3f32127337628379a02d9eb2a3c5902dbccfc02",
     "https://deno.land/x/wasmbuild@0.15.1/cache.ts": "9d01b5cb24e7f2a942bbd8d14b093751fa690a6cde8e21709ddc97667e6669ed",
     "https://deno.land/x/wasmbuild@0.15.1/loader.ts": "8c2fc10e21678e42f84c5135d8ab6ab7dc92424c3f05d2354896a29ccfd02a63"
-  },
-  "workspace": {
-    "dependencies": [
-      "jsr:@lukeed/fetch-event-stream@^0.1.5",
-      "jsr:@std/assert@^0.222.1",
-      "jsr:@std/fmt@^0.222.1"
-    ]
   }
 }

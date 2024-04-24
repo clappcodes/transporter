@@ -149,13 +149,21 @@ export class IncomingStream<I extends Uint8Array = Uint8Array, O = any> {
   name = " → " + this.constructor.name; // ←
   url: URL;
   env: "server" | "client";
+  onResponse?: (response: Response) => Promise<void>;
   constructor(
     url: string | URL | Request,
     private transform: TransformStream<I, O> = new TransformStream<I, O>(),
+    { onResponse }: { onResponse?: (response: Response) => Promise<void> } = {},
   ) {
+    if (onResponse) {
+      this.onResponse = onResponse;
+    }
+
     this.env = url instanceof Request ? "server" : "client";
     this.url = (url instanceof Request)
       ? new URL(url.url)
+      : typeof location === "undefined"
+      ? new URL(url)
       : new URL(url, String(location));
 
     if (this.env === "server") {
@@ -195,6 +203,10 @@ export class IncomingStream<I extends Uint8Array = Uint8Array, O = any> {
         headers: this.headers,
       }),
     );
+    if (this.onResponse) {
+      await this.onResponse(response);
+      return this;
+    }
 
     if (response.body) {
       this.readable = response.body.pipeThrough(this.transform);

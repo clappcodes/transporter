@@ -34,16 +34,6 @@
         "types": "./types/utils.d.ts",
         "default": "./script/utils.js"
       }
-    },
-    "./client.js": {
-      "import": {
-        "types": "./types/client.d.ts",
-        "default": "./esm/client.js"
-      },
-      "require": {
-        "types": "./types/client.d.ts",
-        "default": "./script/client.js"
-      }
     }
   },
   "sideEffects": false,

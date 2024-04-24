@@ -5,6 +5,8 @@ import {
   type OutgoingStream,
 } from "./main.transporter.ts";
 
+export { colors };
+
 export const DEBUG: boolean = typeof Deno !== "undefined"
   ? Deno.env.get("DEBUG")
   : Reflect.get(globalThis, "DEBUG");

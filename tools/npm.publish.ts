@@ -2,9 +2,11 @@
 import { prerelease, valid } from "https://deno.land/x/semver@v1.4.1/mod.ts";
 import { makeOptions } from "./meta.ts";
 import denoPkg from "../deno.json" with { type: "json" };
+import { buildPkg } from "./npm.build.ts";
 
 if (import.meta.main) {
   const version = denoPkg.version;
+  await buildPkg(version);
 
   const isPrerelease = prerelease(version);
   const tag = isPrerelease?.[0] ?? "latest";

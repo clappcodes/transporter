@@ -1,4 +1,76 @@
-import { colors } from "./deps.ts";
+import * as colors from "./colors.ts";
+import { getCachedModuleInfo } from "./tools/mod.ts";
+import { existsSync } from "https://deno.land/std@0.223.0/fs/exists.ts";
+
+function staticHandler(
+  path: string,
+  options?: { index?: string },
+): Handler["fetch"] {
+  return async function staticHandler(
+    request: Request,
+  ): Promise<Response | undefined> {
+    // @ts-ignore ?
+    const url = new URL(request.currentUrl, import.meta.url);
+
+    path = path || ".";
+    options = options || {};
+    options.index = options?.index || "index.html";
+
+    const headers = {
+      "cache-control": "no-cache",
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "*",
+      "access-control-allow-headers": "*",
+      "access-control-max-age": "100",
+    };
+
+    const jsHeaders = {
+      ...headers,
+      "content-type": "application/javascript",
+    };
+
+    if (url.pathname === "/") {
+      return Deno.readFile(path + "/" + options.index)
+        .then((res) => new Response(res))
+        .catch((err) => new Response(err));
+    } else if (
+      url.pathname.endsWith(".ts") ||
+      url.pathname.startsWith("/@") ||
+      url.pathname.startsWith("/jsr:") ||
+      url.pathname.startsWith("/npm:")
+    ) {
+      // TS transform
+      const modUrl = url.pathname.endsWith(".ts")
+        ? new URL(path + url.pathname, import.meta.url)
+        : import.meta.resolve(url.pathname.slice(1));
+
+      await import(modUrl + "");
+      const res = await getCachedModuleInfo(modUrl);
+
+      if (res.emit) {
+        const content = await Deno.readFile(res.emit);
+        return new Response(content, {
+          status: 200,
+          headers: jsHeaders,
+        });
+      }
+
+      return new Response("Module not found: " + modUrl, {
+        status: 404,
+      });
+    } else if (existsSync(path + url.pathname, { isFile: true })) {
+      return Deno.readFile(path + url.pathname)
+        .then((res) => new Response(res, { headers }))
+        .catch((err) => new Response(err));
+    } else {
+      if (url.pathname.endsWith(".ico")) {
+        return new Response(":(", {
+          status: 404,
+        });
+      }
+    }
+  };
+}
 
 export type Handler = {
   route: string;
@@ -13,7 +85,7 @@ console.log(
   colors.green("DEBUG") + "=" + colors.white(Deno.env.get("DEBUG") || "?"!),
 );
 
-export function createServer(
+function createServer(
   onRequest: (
     request: Request,
     info?: Deno.ServeHandlerInfo,
@@ -49,6 +121,7 @@ export function createServer(
 }
 
 export class App {
+  static static = staticHandler;
   stack: Handler[] = [];
   use = (
     route: Handler["route"] | Handler["fetch"],
@@ -59,28 +132,37 @@ export class App {
     } else if (typeof fetch === "function") {
       this.stack.push({ route, fetch });
     }
-    return app;
+    return this;
   };
   get = (route: Handler["route"], fetch: Handler["fetch"]): App => {
     this.stack.unshift({ route, fetch, method: "GET" });
-    return app;
+    return this;
   };
   post = (route: Handler["route"], fetch: Handler["fetch"]): App => {
     this.stack.unshift({ route, fetch, method: "POST" });
-    return app;
+    return this;
   };
   fetch = async (
     request: Request,
     info?: Deno.ServeHandlerInfo,
   ): Promise<Response> => {
     const url = new URL(request.url);
-    const path = url.pathname.endsWith("/") ? url.pathname : url.pathname + "/";
+    const path = url.pathname; //url.pathname.endsWith("/") ? url.pathname : url.pathname + "/";
     for (const layer of this.stack) {
       if (
-        path.startsWith(
-          layer.route.endsWith("/") ? layer.route : layer.route + "/",
-        ) && (!layer.method || layer.method === request.method)
+        path.startsWith(layer.route) &&
+        (!layer.method || layer.method === request.method)
       ) {
+        // @ts-ignore ?
+        request.currentUrl = request.url.replace(layer.route, "");
+
+        // console.log(
+        //   "(layer)",
+        //   // @ts-ignore ?
+        //   request.currentUrl,
+        //   path,
+        //   colors.green("MATCH") + "=" + colors.white(layer.route),
+        // );
         const res = await Promise.resolve(layer.fetch(request, info));
         if (res instanceof Response) {
           return res;
@@ -90,8 +172,12 @@ export class App {
 
     return new Response(`404 - Not Found\n${url.pathname}`);
   };
+
+  // static = (route: string, path: string, opts: { index?: string } = {}) =>
+  //   app.use(route, staticHandler({ path, ...opts }));
+
   serve = (options?: Partial<Deno.ServeTlsOptions>): Deno.HttpServer =>
     createServer(this.fetch, options);
 }
 
-export const app: App = new App();
+// export const app: App = new App();

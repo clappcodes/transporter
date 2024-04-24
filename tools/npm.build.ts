@@ -3,7 +3,7 @@ import { join } from "https://deno.land/std@0.222.1/path/mod.ts";
 import { makeOptions } from "./meta.ts";
 import pkg from "../deno.json" with { type: "json" };
 
-async function buildPkg(version: string): Promise<void> {
+export async function buildPkg(version: string): Promise<void> {
   await emptyDir("./npm");
   const pkg = makeOptions(version);
   Deno.copyFile(
