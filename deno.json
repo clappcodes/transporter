@@ -1,10 +1,9 @@
 {
   "name": "@clappcodes/transporter",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run -A --inspect --env --watch main.ts",
-    "bundle0": "deno bundle client.ts client.js",
     "bundle": "deno run -A ./tools/esbuild.ts",
     "npm:build": "deno run -A ./tools/npm.build.ts",
     "npm:publish": "deno run -A ./tools/npm.publish.ts",
