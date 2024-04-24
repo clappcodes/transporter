@@ -1,6 +1,6 @@
 {
   "name": "@clappcodes/transporter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run -A --inspect --env --watch main.ts",
@@ -16,6 +16,6 @@
   ],
   "imports": {
     "@std/assert": "jsr:@std/assert@^0.223.0",
-    "@std/fs": "jsr:@std/fs@^0.223.0"
+    "@std/fs/exists": "jsr:@std/fs@^0.223.0/exists"
   }
 }

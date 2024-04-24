@@ -1,4 +1,4 @@
-import { assertExists } from "@std/assert/assert-exists";
+import { assertExists } from "jsr:@std/assert/assert-exists";
 
 /*
 `deno info --json` is unstable, and I didn't find any mention of schema for its

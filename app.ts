@@ -1,11 +1,25 @@
 import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
-import { existsSync } from "@std/fs/exists";
+import { existsSync } from "jsr:@std/fs/exists";
+import { DEBUG } from "./utils.ts";
+
+console.log(
+  colors.green("DEBUG") + "=" + colors.white(Deno.env.get("DEBUG") || "?"!),
+);
+
+export type Handler = {
+  route: string;
+  fetch: (
+    request: Request,
+    info?: Deno.ServeHandlerInfo,
+  ) => Response | Promise<Response | undefined> | undefined;
+  method?: "GET" | "POST" | "PUT" | "HEAD" | "OPTIONS" | "DELETE";
+};
 
 function notFoundHandler(request: Request): Response {
   return new Response(
     `
-    <h1>404 - Not Found</h1>
+    <h1>404 - Not Found!!</h1>
     <code>${request.url}</code>`,
     {
       status: 404,
@@ -86,19 +100,6 @@ function staticHandler(
   };
 }
 
-export type Handler = {
-  route: string;
-  fetch: (
-    request: Request,
-    info?: Deno.ServeHandlerInfo,
-  ) => Response | Promise<Response | undefined> | undefined;
-  method?: "GET" | "POST" | "PUT" | "HEAD" | "OPTIONS" | "DELETE";
-};
-
-console.log(
-  colors.green("DEBUG") + "=" + colors.white(Deno.env.get("DEBUG") || "?"!),
-);
-
 function createServer(
   onRequest: (
     request: Request,
@@ -137,6 +138,7 @@ function createServer(
 export class App {
   static static = staticHandler;
   stack: Handler[] = [];
+
   use = (
     route: Handler["route"] | Handler["fetch"],
     fetch?: Handler["fetch"],
@@ -148,20 +150,24 @@ export class App {
     }
     return this;
   };
+
   get = (route: Handler["route"], fetch: Handler["fetch"]): App => {
     this.stack.unshift({ route, fetch, method: "GET" });
     return this;
   };
+
   post = (route: Handler["route"], fetch: Handler["fetch"]): App => {
     this.stack.unshift({ route, fetch, method: "POST" });
     return this;
   };
+
   fetch = async (
     request: Request,
     info?: Deno.ServeHandlerInfo,
   ): Promise<Response> => {
     const url = new URL(request.url);
     const path = url.pathname; //url.pathname.endsWith("/") ? url.pathname : url.pathname + "/";
+
     for (const layer of this.stack) {
       if (
         path.startsWith(layer.route) &&
@@ -170,14 +176,19 @@ export class App {
         // @ts-ignore ?
         request.currentUrl = request.url.replace(layer.route, "");
 
-        // console.log(
-        //   "(layer)",
-        //   // @ts-ignore ?
-        //   request.currentUrl,
-        //   path,
-        //   colors.green("MATCH") + "=" + colors.white(layer.route),
-        // );
+        if (DEBUG) {
+          console.log(
+            // @ts-ignore ?
+            colors.yellow("(LAYER)") + " " + request.currentUrl + " " +
+              colors.green("MATCH") + " " + path +
+              " > " +
+              colors.white(layer.route) + " " +
+              colors.magenta(layer.fetch.name),
+          );
+        }
+
         const res = await Promise.resolve(layer.fetch(request, info));
+
         if (res instanceof Response) {
           return res;
         }
