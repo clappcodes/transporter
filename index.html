@@ -1,0 +1,18 @@
+<script type="module">
+	self.DEBUG = true;
+	const assign = (exports) => (
+		console.log(Object.keys(exports)), Object.assign(globalThis, exports)
+	);
+	import("/main.transporter.ts").then(assign);
+	import("/text.transporter.ts").then(assign);
+
+	// import("/transporter.util.ts").then(assign);
+	import("/client.ts").then(assign);
+</script>
+<style>
+	body {
+		background: #222;
+		color: darkgray;
+	}
+</style>
+<h1>transporter</h1>

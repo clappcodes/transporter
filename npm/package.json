@@ -1,0 +1,55 @@
+{
+  "name": "@clappcodes/transporter",
+  "version": "0.1.8",
+  "description": "IO Stream",
+  "homepage": "https://github.com/clappcodes/transporter",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clappcodes/transporter.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clappcodes/transporter/issues"
+  },
+  "main": "./script/transporter.js",
+  "module": "./esm/transporter.js",
+  "types": "./types/transporter.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/transporter.d.ts",
+        "default": "./esm/transporter.js"
+      },
+      "require": {
+        "types": "./types/transporter.d.ts",
+        "default": "./script/transporter.js"
+      }
+    },
+    "./utils.js": {
+      "import": {
+        "types": "./types/utils.d.ts",
+        "default": "./esm/utils.js"
+      },
+      "require": {
+        "types": "./types/utils.d.ts",
+        "default": "./script/utils.js"
+      }
+    },
+    "./client.js": {
+      "import": {
+        "types": "./types/client.d.ts",
+        "default": "./esm/client.js"
+      },
+      "require": {
+        "types": "./types/client.d.ts",
+        "default": "./script/client.js"
+      }
+    }
+  },
+  "sideEffects": false,
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "_generatedBy": "dnt@0.40.0"
+}

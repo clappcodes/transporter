@@ -1,0 +1,22 @@
+{
+  "name": "@clappcodes/transporter",
+  "version": "0.1.8",
+  "exports": "./mod.ts",
+  "tasks": {
+    "dev": "deno run -A --inspect --env --watch main.ts",
+    "bundle0": "deno bundle client.ts client.js",
+    "bundle": "deno run -A ./tools/esbuild.ts",
+    "npm:build": "deno run -A ./tools/npm.build.ts",
+    "npm:publish": "deno run -A ./tools/npm.publish.ts",
+    "safe": "deno fmt && deno lint && deno check **/*.ts"
+  },
+  "exclude": [
+    "npm"
+  ],
+  "imports": {
+    "@/": "./",
+    "@lukeed/fetch-event-stream": "jsr:@lukeed/fetch-event-stream@^0.1.5",
+    "@std/assert": "jsr:@std/assert@^0.222.1",
+    "@std/fmt": "jsr:@std/fmt@^0.222.1"
+  }
+}
