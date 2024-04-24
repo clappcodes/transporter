@@ -23,11 +23,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.valueFromKeyObject = exports.swapObject = exports.createWrite = exports.createRead = exports.putStream = exports.getStream = exports.log = exports.DeferredPromise = exports.mkRangeAsyncIterator = exports.mkRangeIterator = exports.ReadyState = exports.DEBUG = void 0;
+exports.valueFromKeyObject = exports.swapObject = exports.createWrite = exports.createRead = exports.putStream = exports.getStream = exports.log = exports.DeferredPromise = exports.mkRangeAsyncIterator = exports.mkRangeIterator = exports.ReadyState = exports.DEBUG = exports.colors = void 0;
 // deno-lint-ignore-file
 require("./_dnt.polyfills.js");
 const dntShim = __importStar(require("./_dnt.shims.js"));
 const colors = __importStar(require("./colors.js"));
+exports.colors = colors;
 exports.DEBUG = typeof Deno !== "undefined"
     ? Deno.env.get("DEBUG")
     : Reflect.get(dntShim.dntGlobalThis, "DEBUG");

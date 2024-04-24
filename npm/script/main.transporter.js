@@ -191,7 +191,7 @@ Object.defineProperty(OutgoingStream, "get", {
     }
 });
 class IncomingStream {
-    constructor(url, transform = new TransformStream()) {
+    constructor(url, transform = new TransformStream(), { onResponse } = {}) {
         Object.defineProperty(this, "transform", {
             enumerable: true,
             configurable: true,
@@ -252,10 +252,21 @@ class IncomingStream {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "onResponse", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        if (onResponse) {
+            this.onResponse = onResponse;
+        }
         this.env = url instanceof Request ? "server" : "client";
         this.url = (url instanceof Request)
             ? new URL(url.url)
-            : new URL(url, String(location));
+            : typeof location === "undefined"
+                ? new URL(url)
+                : new URL(url, String(location));
         if (this.env === "server") {
             this.ready = this.handle(url);
         }
@@ -289,6 +300,10 @@ class IncomingStream {
         const response = await fetch(new Request(this.url, {
             headers: this.headers,
         }));
+        if (this.onResponse) {
+            await this.onResponse(response);
+            return this;
+        }
         if (response.body) {
             this.readable = response.body.pipeThrough(this.transform);
         }

@@ -42,7 +42,10 @@ export declare class IncomingStream<I extends Uint8Array = Uint8Array, O = any> 
     name: string;
     url: URL;
     env: "server" | "client";
-    constructor(url: string | URL | Request, transform?: TransformStream<I, O>);
+    onResponse?: (response: Response) => Promise<void>;
+    constructor(url: string | URL | Request, transform?: TransformStream<I, O>, { onResponse }?: {
+        onResponse?: (response: Response) => Promise<void>;
+    });
     [Symbol.asyncIterator](): AsyncGenerator<Awaited<O>, void, unknown>;
     fetch(): Promise<this>;
     handle(request: Request): Promise<this>;

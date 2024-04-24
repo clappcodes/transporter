@@ -1,6 +1,6 @@
 import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
-import { existsSync } from "https://deno.land/std@0.223.0/fs/exists.ts";
+import { existsSync } from "jsr:@std/fs/exists";
 
 function notFoundHandler(request: Request): Response {
   return new Response(

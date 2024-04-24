@@ -2,6 +2,7 @@
 import "./_dnt.polyfills.js";
 import * as dntShim from "./_dnt.shims.js";
 import * as colors from "./colors.js";
+export { colors };
 export const DEBUG = typeof Deno !== "undefined"
     ? Deno.env.get("DEBUG")
     : Reflect.get(dntShim.dntGlobalThis, "DEBUG");

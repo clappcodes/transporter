@@ -9,6 +9,8 @@ import {
   type OutgoingStream,
 } from "./main.transporter.js";
 
+export { colors };
+
 export const DEBUG: boolean = typeof Deno !== "undefined"
   ? Deno.env.get("DEBUG")
   : Reflect.get(dntShim.dntGlobalThis, "DEBUG");

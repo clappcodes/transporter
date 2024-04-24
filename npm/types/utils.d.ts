@@ -1,5 +1,7 @@
 import "./_dnt.polyfills.js";
+import * as colors from "./colors.js";
 import { type IncomingStream, type OutgoingStream } from "./main.transporter.js";
+export { colors };
 export declare const DEBUG: boolean;
 export declare enum ReadyState {
     CONNECTING = 0,

@@ -11,6 +11,7 @@
       "jsr:@std/fmt": "jsr:@std/fmt@0.222.1",
       "jsr:@std/fmt@^0.220.1": "jsr:@std/fmt@0.220.1",
       "jsr:@std/fmt@^0.222.1": "jsr:@std/fmt@0.222.1",
+      "jsr:@std/fs": "jsr:@std/fs@0.223.0",
       "jsr:@std/json@^0.213.1": "jsr:@std/json@0.213.1",
       "jsr:@std/jsonc@0.213": "jsr:@std/jsonc@0.213.1",
       "jsr:@std/path@0.213": "jsr:@std/path@0.213.1",
@@ -50,6 +51,9 @@
       },
       "@std/fmt@0.222.1": {
         "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
+      },
+      "@std/fs@0.223.0": {
+        "integrity": "3b4b0550b2c524cbaaa5a9170c90e96cbb7354e837ad1bdaf15fc9df1ae9c31c"
       },
       "@std/json@0.213.1": {
         "integrity": "f572b1de605d07c4a5602445dac54bfc51b1fb87a3710a17aed2608bfca54e68"
