@@ -13,9 +13,5 @@
   "exclude": [
     "npm",
     "bundle"
-  ],
-  "imports": {
-    "@std/assert": "jsr:@std/assert@^0.223.0",
-    "@std/fs/exists": "jsr:@std/fs@^0.223.0/exists"
-  }
+  ]
 }

@@ -1,6 +1,6 @@
 import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
-import { existsSync } from "jsr:@std/fs/exists";
+import { existsSync } from "jsr:@std/fs@^0.223.0/exists";
 import { DEBUG } from "./utils.ts";
 
 console.log(
