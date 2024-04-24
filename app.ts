@@ -1,6 +1,6 @@
 import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
-import { existsSync } from "jsr:@std/fs/exists";
+import { existsSync } from "@std/fs/exists";
 
 function notFoundHandler(request: Request): Response {
   return new Response(

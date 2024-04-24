@@ -14,5 +14,5 @@
     "npm",
     "bundle"
   ],
-  "imports": {}
+  "imports": { "@std/fs": "jsr:@std/fs@^0.223.0" }
 }
