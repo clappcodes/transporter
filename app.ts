@@ -1,7 +1,7 @@
 import * as colors from "./colors.ts";
 import { getCachedModuleInfo } from "./tools/mod.ts";
 import { existsSync } from "jsr:@std/fs@^0.223.0/exists";
-import { DEBUG } from "./utils.ts";
+import { isDebug } from "./utils.ts";
 
 console.log(
   colors.green("DEBUG") + "=" + colors.white(Deno.env.get("DEBUG") || "?"!),
@@ -196,7 +196,7 @@ export class App {
         // @ts-ignore ?
         request.currentUrl = request.url.replace(layer.route, "");
 
-        if (DEBUG) {
+        if (isDebug()) {
           console.log(
             // @ts-ignore ?
             colors.yellow("(LAYER)") + " " + request.currentUrl + " " +

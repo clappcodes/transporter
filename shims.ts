@@ -27,9 +27,11 @@ export async function* ReadableStreamIterator<R>(this: ReadableStream<R>) {
   }
 }
 
-if (typeof ReadableStream.from === "undefined") {
+if (!Reflect.has(ReadableStream, "from")) {
   console.log("(shim) ReadableStream.from");
-  ReadableStream.from = ReadableStreamFrom;
+  Object.defineProperty(ReadableStream, "from", {
+    value: ReadableStreamFrom,
+  });
 }
 
 if (typeof ReadableStream.prototype[Symbol.asyncIterator] === "undefined") {

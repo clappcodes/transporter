@@ -1,15 +1,18 @@
 // deno-lint-ignore-file
 import * as colors from "./colors.ts";
-import {
-  type IncomingStream,
-  type OutgoingStream,
-} from "./main.transporter.ts";
+import { type OutgoingStream } from "./OutgoingStream.ts";
+import { type IncomingStream } from "./IncomingStream.ts";
 
 export { colors };
 
 export const DEBUG: boolean = typeof Deno !== "undefined"
-  ? Deno.env.get("DEBUG")
+  ? Boolean(Deno.env.get("DEBUG"))
   : Reflect.get(globalThis, "DEBUG");
+
+export const isDebug = (): boolean =>
+  typeof Deno !== "undefined"
+    ? Boolean(Deno.env.get("DEBUG"))
+    : Reflect.get(globalThis, "DEBUG");
 
 console.log(
   colors.green("(T) DEBUG") + "=" +
@@ -79,7 +82,7 @@ export function log(
   method: string,
   ...value: unknown[]
 ) {
-  if (!DEBUG) return;
+  if (!isDebug()) return;
   const isIn = _this.constructor.name === "IncomingStream";
   const nameColor = isIn ? colors.cyan : colors.magenta;
   const nameBg = (a: string) => a;
@@ -266,3 +269,77 @@ export const valueFromKeyObject = <T extends { [key: PropertyKey]: any }>(
 ): {
   [K in keyof T]: K;
 } => Object.fromEntries(Object.entries(obj).map(([k, _v]) => [k as any, k]));
+
+export const _isTransformStream = <T extends object>(input: T) =>
+  typeof input === "object" &&
+  Object.hasOwn(input, "writable") && Object.hasOwn(input, "readable");
+
+export const isTransformStream = (a: unknown): a is GenericTransformStream =>
+  typeof a === "object" && "readable" in a!;
+
+export class PipeStream<T> {
+  constructor(
+    private _source: ReadableStream<T>,
+    private _transform: TransformStream,
+    private _sink: WritableStream<T>,
+  ) {
+    this._source.pipeThrough(_transform).pipeTo(_sink);
+  }
+
+  get source() {
+    return this._source;
+  }
+
+  get transform() {
+    return this._transform;
+  }
+
+  get sink() {
+    return this._sink;
+  }
+}
+
+type LengthOfTuple<T extends any[]> = T extends { length: infer L } ? L
+  : never;
+type DropFirstInTuple<T extends any[]> = ((...args: T) => any) extends
+  (arg: any, ...rest: infer U) => any ? U : T;
+export type LastInTuple<T extends any[]> =
+  T[LengthOfTuple<DropFirstInTuple<T>>];
+
+export class PipelineStream<
+  T extends [TransformStream, ...TransformStream[]],
+> {
+  readable: LastInTuple<T>["readable"];
+  writable: T[0]["writable"];
+
+  constructor(
+    private transformers: T,
+    writableStrategy?: QueuingStrategy,
+    readableStrategy?: QueuingStrategy,
+  ) {
+    const [first, ...rest] = this.transformers;
+
+    this.writable = first.writable;
+    this.readable = rest.reduce(
+      (readable, transform) => readable.pipeThrough(transform),
+      first.readable,
+    );
+
+    // if (this.transformers.length === 3) {
+    //   this.readable = this.transformers[0].readable
+    //     .pipeThrough(this.transformers[1])
+    //     .pipeThrough(this.transformers[2]);
+    // } else {
+    //   this.readable = this.transformers.at(-1)!.readable;
+    // }
+  }
+}
+
+// const pip = new PipelineStream([
+//   new TransformStream<string, number>(),
+//   new TransformStream<number, symbol>(),
+//   new TransformStream<string, number>(),
+// ]);
+
+// pip.writable.getWriter().write("ss");
+// pip.readable.getReader();

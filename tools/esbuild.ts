@@ -20,7 +20,12 @@ const result = await esbuild.build({
   // outfile: "./dist/transporter.js",
   sourcemap: "linked",
   bundle: true,
-  format: "esm",
+  format: "iife",
+  platform: "neutral",
+  globalName: "Transporter",
+  keepNames: true,
+  target: ["esnext"],
+  define: { "Transporter": "Transporter" },
 });
 
 console.log(result.outputFiles);

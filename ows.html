@@ -1,0 +1,19 @@
+<!doctype html>
+
+<button id="dec">-</button>
+
+<span id="counter">0</span>
+
+<button id="inc">+</button>
+
+<script type="importmap">
+	{
+		"imports": {
+			"observables-with-streams": "https://esm.sh/observables-with-streams"
+		}
+	}
+</script>
+<script type="module">
+	import { main } from "./ows.ts";
+	main();
+</script>

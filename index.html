@@ -1,24 +1,14 @@
 <script>
 	var DEBUG = true;
 </script>
+<script type="module" src="/global.ts"></script>
 <script type="module">
-	import {
-		IncomingTextStream,
-		OutgoingTextStream,
-	} from "./bundle/transporter.js";
+	import * as Utils from "./utils.ts";
+	import * as Playground from "./playground.ts";
 
-	async function textStream() {
-		const incoming = new IncomingTextStream("/foo");
-		const outgoing = new OutgoingTextStream("/foo");
+	Playground.main();
 
-		await outgoing.write("Hello, from browser");
-
-		for await (const chunk of await incoming.ready) {
-			console.log("(server)", chunk);
-		}
-	}
-
-	textStream();
+	Object.assign(window, { Playground, Utils });
 </script>
 <style>
 	body {
@@ -27,3 +17,8 @@
 	}
 </style>
 <h1>transporter</h1>
+<input
+	type="text"
+	id="message"
+	style="width: 100%; padding: 5px; font-size: larger"
+/>

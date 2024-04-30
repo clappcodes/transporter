@@ -8,6 +8,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   },
   typeCheck: false,
   declaration: "separate",
+  scriptModule: "umd",
   esModule: true,
   entryPoints: [
     "./transporter.ts",
@@ -24,7 +25,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   package: {
     name: "@clappcodes/transporter",
     version,
-    description: "IO Stream",
+    description: "Duplex Web Stream",
     license: "MIT",
     homepage: "https://github.com/clappcodes/transporter",
     repository: {
