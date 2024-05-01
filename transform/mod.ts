@@ -8,3 +8,4 @@ export * from "./upper-case.ts";
 export * from "./log.ts";
 export * from "./to-string.ts";
 export * from "./to-number.ts";
+export * from "./debounce.ts";

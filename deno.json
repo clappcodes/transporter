@@ -1,6 +1,6 @@
 {
   "name": "@clappcodes/transporter",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run -A --inspect --env --watch main.ts",

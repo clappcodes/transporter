@@ -5,20 +5,55 @@ import { type IncomingStream } from "./IncomingStream.ts";
 
 export { colors };
 
-export const DEBUG: boolean = typeof Deno !== "undefined"
-  ? Boolean(Deno.env.get("DEBUG"))
-  : Reflect.get(globalThis, "DEBUG");
+// export const DEBUG: boolean = typeof Deno !== "undefined"
+//   ? Boolean(Deno.env.get("DEBUG"))
+//   : Reflect.get(globalThis, "DEBUG");
 
 export const isDebug = (): boolean =>
   typeof Deno !== "undefined"
-    ? Boolean(Deno.env.get("DEBUG"))
-    : Reflect.get(globalThis, "DEBUG");
+    ? Deno.env.get("DEBUG") === "true"
+    : Boolean(Reflect.get(globalThis, "DEBUG"));
+
+Object.assign(globalThis, { isDebug });
 
 console.log(
-  colors.green("(T) DEBUG") + "=" +
-    colors.white(DEBUG + ""),
+  colors.green("(utils) DEBUG") + "=" +
+    colors.white(isDebug() + ""),
 );
 
+export function duplexFetch(
+  input: string | URL | Request,
+  init?: RequestInit,
+): Promise<Response> {
+  const id = String(Math.random());
+
+  const { body, ...rest } = init || {};
+
+  const headers = {
+    [idKey]: id,
+    ...init?.headers,
+  };
+
+  fetch(input, {
+    body,
+    // @ts-ignore .
+    duplex: "half",
+    method: "POST",
+    headers,
+    ...rest,
+  }).then(async (response) => {
+    console.log("POST Request(" + id + ")", "Done", await response.text());
+  });
+
+  return fetch(input, { headers, ...rest });
+}
+
+export async function delay(ms: number): Promise<unknown> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+export const idKey = "transporter-stream-id";
 export enum ReadyState {
   CONNECTING = 0,
   INCOMING = 1,
@@ -270,34 +305,12 @@ export const valueFromKeyObject = <T extends { [key: PropertyKey]: any }>(
   [K in keyof T]: K;
 } => Object.fromEntries(Object.entries(obj).map(([k, _v]) => [k as any, k]));
 
-export const _isTransformStream = <T extends object>(input: T) =>
+export const _isTransformStream = <T extends object>(input: T): boolean =>
   typeof input === "object" &&
   Object.hasOwn(input, "writable") && Object.hasOwn(input, "readable");
 
 export const isTransformStream = (a: unknown): a is GenericTransformStream =>
   typeof a === "object" && "readable" in a!;
-
-export class PipeStream<T> {
-  constructor(
-    private _source: ReadableStream<T>,
-    private _transform: TransformStream,
-    private _sink: WritableStream<T>,
-  ) {
-    this._source.pipeThrough(_transform).pipeTo(_sink);
-  }
-
-  get source() {
-    return this._source;
-  }
-
-  get transform() {
-    return this._transform;
-  }
-
-  get sink() {
-    return this._sink;
-  }
-}
 
 type LengthOfTuple<T extends any[]> = T extends { length: infer L } ? L
   : never;

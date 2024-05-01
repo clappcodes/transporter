@@ -4,3 +4,7 @@ export * from "./from.ts";
 export * from "./from-timer.ts";
 export * from "./external.ts";
 export * from "./from-event.ts";
+export * from "./from-generator.ts";
+export * from "./from-iterable.ts";
+export * from "./just.ts";
+export * from "./range.ts";

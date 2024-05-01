@@ -1,8 +1,11 @@
 import type { Transform } from "../types.ts";
 import { map } from "./map.ts";
 
-export function toString<T>(): Transform<T, string> {
-  return map<T, string>(String);
+export function toString<I, O extends string = string>(): Transform<
+  I,
+  string
+> {
+  return map<I, string>(String);
 }
 
 export function stringify<T>(

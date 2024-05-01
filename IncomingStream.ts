@@ -66,7 +66,7 @@ export class IncomingStream<I extends Uint8Array = Uint8Array, O = any> {
   /**
    * The readable stream associated with the pipeline.
    */
-  get readable() {
+  get readable(): ReadableStream {
     return this.pipeline.readable;
   }
 

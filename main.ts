@@ -1,6 +1,11 @@
+import "./global.ts";
 import { App, IncomingTextStream, OutgoingTextStream } from "./mod.dev.ts";
 import * as mod from "./mod.dev.ts";
-import { decode, encode, fromBody, fromTimer, toString } from "./mod.ts";
+
+import { fromBody, fromTimer } from "./readable/mod.ts";
+import { decode, encode, toString } from "./transform/mod.ts";
+
+import { idKey } from "./utils.ts";
 
 const app = new App();
 app.use(App.static());
@@ -50,6 +55,104 @@ app.post("/sse", async (request) => {
   }
 
   return new Response();
+});
+
+const streams = new Map<string, RequestStream>();
+const requests = new Map<string, {
+  incoming?: Request;
+  outgoing?: Request;
+}>();
+
+Object.assign(globalThis, { streams, requests });
+
+class RequestStream extends TransformStream<Uint8Array, Uint8Array> {
+  get request() {
+    return requests.get(this.id);
+  }
+
+  get incomingRequest() {
+    return this.request?.incoming;
+  }
+
+  get outgoingRequest() {
+    return this.request?.outgoing;
+  }
+
+  constructor(public id: string) {
+    super({
+      start() {
+        console.log("<< Started >>", id);
+      },
+      transform(chunk, ctrl) {
+        console.log("( transform )", id, chunk);
+        ctrl.enqueue(chunk);
+      },
+      cancel(reason) {
+        console.log("<< Closed >>", id, reason);
+
+        streams.delete(id);
+        requests.delete(id);
+
+        return Promise.resolve();
+      },
+    });
+  }
+}
+
+const requestStream = (request: Request) => {
+  const id = request.headers.get(idKey);
+
+  if (!id) {
+    throw new TypeError("Sync Failed: Request header " + idKey + " = " + id);
+  }
+
+  if (!streams.has(id)) {
+    requests.set(id, {
+      incoming: undefined,
+      outgoing: undefined,
+    });
+    streams.set(id, new RequestStream(id));
+  }
+
+  const requestPair = requests.get(id)!;
+  const requestStream = streams.get(id)!;
+
+  if (
+    request.method === "POST" && typeof requestPair.incoming === "undefined"
+  ) {
+    console.log("(set)( incoming )(request)", id);
+    requestPair.incoming = request;
+  } else if (
+    request.method === "GET" && typeof requestPair.outgoing === "undefined"
+  ) {
+    console.log("(set)( outgoing )(request)", id);
+    requestPair.outgoing = request;
+  }
+
+  return requestStream;
+};
+
+app.post(
+  "/echo",
+  async (request) => {
+    const api = requestStream(request);
+    await request.body?.pipeTo(api.writable);
+    return new Response("ok", {
+      headers: {
+        "stream-id": api.id,
+      },
+    });
+  },
+);
+
+app.get("/echo", (request) => {
+  const api = requestStream(request);
+
+  return new Response(api.readable, {
+    headers: {
+      "content-type": "text/event-stream",
+    },
+  });
 });
 
 app.serve({ port: 8033 });

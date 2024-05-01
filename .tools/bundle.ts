@@ -7,16 +7,15 @@ import { emptyDir } from "https://deno.land/x/dnt@0.40.0/mod.ts";
 
 import { denoPlugins } from "jsr:@luca/esbuild-deno-loader@^0.10.3";
 
-await emptyDir("./bundle");
+await emptyDir("./.bundle");
 
 const result = await esbuild.build({
   plugins: [...denoPlugins()],
   // entryPoints: ["https://deno.land/std@0.185.0/bytes/mod.ts"],
   entryPoints: [
-    "./transporter.ts",
-    "./utils.ts",
+    "./mod.ts",
   ],
-  outdir: "./bundle",
+  outdir: "./.bundle",
   // outfile: "./dist/transporter.js",
   sourcemap: "linked",
   bundle: true,
@@ -25,7 +24,6 @@ const result = await esbuild.build({
   globalName: "Transporter",
   keepNames: true,
   target: ["esnext"],
-  define: { "Transporter": "Transporter" },
 });
 
 console.log(result.outputFiles);

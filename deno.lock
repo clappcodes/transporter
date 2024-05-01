@@ -17,7 +17,8 @@
       "jsr:@std/path@0.213": "jsr:@std/path@0.213.1",
       "jsr:@std/testing": "jsr:@std/testing@0.222.1",
       "npm:@clappcodes/transporter": "npm:@clappcodes/transporter@0.1.1",
-      "npm:esbuild@0.20.2": "npm:esbuild@0.20.2"
+      "npm:esbuild@0.20.2": "npm:esbuild@0.20.2",
+      "npm:observables-with-streams": "npm:observables-with-streams@0.6.1"
     },
     "jsr": {
       "@luca/esbuild-deno-loader@0.10.3": {
@@ -205,6 +206,10 @@
           "@esbuild/win32-ia32": "@esbuild/win32-ia32@0.20.2",
           "@esbuild/win32-x64": "@esbuild/win32-x64@0.20.2"
         }
+      },
+      "observables-with-streams@0.6.1": {
+        "integrity": "sha512-p7T567fNF9NQNDL9yszjPGtVZgqSkhFzjoy9wXO6B7JBPEDbE9TVSzPu+Oa7J+mkeM5OWzXxrMST8kdyCr878w==",
+        "dependencies": {}
       }
     }
   },

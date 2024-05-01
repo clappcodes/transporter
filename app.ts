@@ -1,10 +1,10 @@
 import * as colors from "./colors.ts";
-import { getCachedModuleInfo } from "./tools/mod.ts";
+import { getCachedModuleInfo } from "./.tools/mod.ts";
 import { existsSync } from "jsr:@std/fs@^0.223.0/exists";
 import { isDebug } from "./utils.ts";
 
 console.log(
-  colors.green("DEBUG") + "=" + colors.white(Deno.env.get("DEBUG") || "?"!),
+  colors.green("(app) DEBUG") + "=" + colors.white(String(isDebug())),
 );
 
 export type Handler = {
@@ -44,7 +44,7 @@ function staticHandler(
     options = options || {};
     options.index = options?.index || "index.html";
 
-    console.log("staticHandler", url.pathname, path, options?.index);
+    // console.log("staticHandler", url.pathname, path, options?.index);
 
     const headers = {
       "cache-control": "no-cache",
@@ -149,7 +149,11 @@ function createServer(
     },
     ...options,
   }, function onFetch(request, info) {
-    console.log(colors.blue(`[${request.method}] `) + colors.gray(request.url));
+    if (isDebug()) {
+      console.log(
+        colors.blue(`[${request.method}] `) + colors.gray(request.url),
+      );
+    }
 
     return onRequest(request, info);
   });

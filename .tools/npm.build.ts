@@ -4,7 +4,7 @@ import { makeOptions } from "./meta.ts";
 import pkg from "../deno.json" with { type: "json" };
 
 export async function buildPkg(version: string): Promise<void> {
-  await emptyDir("./npm");
+  await emptyDir("./.npm");
   const pkg = makeOptions(version);
   Deno.copyFile(
     join(".", "README.md"),
