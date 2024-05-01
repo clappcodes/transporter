@@ -57,29 +57,32 @@ export async function echo() {
   //   from(["one", "two", "22", "How atre u"]),
   // )
 
-  const body = fromEvent<HTMLInputElement, InputEvent>(
-    document.querySelector("#message")!,
-    "input",
-  )
-    .pipeThrough(map((e) => e.data))
-    .pipeThrough(toEvent("message"))
-    .pipeThrough(encode());
-
   const incomingStream = await duplexFetch("/echo", {
-    body,
+    body: fromEvent<HTMLInputElement, InputEvent>(
+      document.querySelector("#message")!,
+      "input",
+    )
+      .pipeThrough(map((e) => e.data))
+      .pipeThrough(toEvent("message")) // SSE
+      .pipeThrough(encode()),
   })
     .then(fromBody)
-    .then(
-      pipe(decode())
-        .pipe(log("echo\n")),
-    );
+    .then(decode);
 
-  for await (const _chunk of incomingStream) {
-    // console.log("[iter]", chunk);
+  const [domStream, iterStream] = incomingStream.tee();
+
+  domStream.pipeTo(subscribe((val) => {
+    document.querySelector("#outgoing")!.innerHTML = val;
+  }));
+
+  for await (const _chunk of iterStream) {
+    console.log(_chunk);
   }
 }
 
 export async function main() {
   // await receive();
-  await send();
+  // await send();
+
+  await echo();
 }

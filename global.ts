@@ -2,8 +2,8 @@ import { bgBlack, bold, gray, white } from "./colors.ts";
 import * as transporter from "./mod.ts";
 
 console.log(
-  bgBlack(white(bold(transporter.pkg.name))) + " " +
-    gray(transporter.pkg.version),
+  bgBlack(white(bold(transporter.package.name))) + " " +
+    gray(transporter.package.version),
 );
 
 const table = {

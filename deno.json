@@ -1,19 +1,19 @@
 {
   "name": "@clappcodes/transporter",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run -A --inspect --env --watch main.ts",
-    "bundle": "deno run -A ./tools/esbuild.ts",
-    "npm:build": "deno run -A ./tools/npm.build.ts",
-    "npm:publish": "deno run -A ./tools/npm.publish.ts",
+    "bundle": "deno run -A ./.tools/bundle.ts",
+    "npm:build": "deno run -A ./.tools/npm.build.ts",
+    "npm:publish": "deno run -A ./.tools/npm.publish.ts",
     "safe": "deno fmt && deno lint && deno check mod.ts",
     "pub": "deno task safe && deno task bundle && deno task npm:publish && deno publish --allow-dirty",
     "deploy": "deno task safe && deno task bundle && deployctl deploy --prod"
   },
   "exclude": [
-    "npm",
-    "bundle"
+    ".npm",
+    ".bundle"
   ],
   "compilerOptions": {
     "lib": [
@@ -26,7 +26,7 @@
     "name": "transporter",
     "exclude": [
       "**/node_modules",
-      "npm"
+      ".npm"
     ],
     "include": [],
     "entrypoint": "main.ts"

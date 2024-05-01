@@ -1,14 +1,16 @@
 <script>
 	var DEBUG = true;
 </script>
-<script type="module" src="/global.ts"></script>
+<!-- <script type="module" src="/.bundle/global.js"></script> -->
+
+<!-- <script type="module" src="/global.ts"></script> -->
 <script type="module">
-	import * as Utils from "./utils.ts";
 	import * as Playground from "./playground.ts";
+	// import * as Playground from "./.bundle/playground.js";
 
 	Playground.main();
 
-	Object.assign(window, { Playground, Utils });
+	Object.assign(window, { Playground });
 </script>
 <style>
 	body {
@@ -23,7 +25,9 @@
 	style="width: 100%; padding: 5px; font-size: larger"
 />
 <hr />
+<pre style="display: block">
 <code
 	id="outgoing"
-	style="background: rgba(0, 0, 0, 0.3); padding: 5px; font-size: larger"
+	style="background: rgba(0, 0, 0, 0.3); padding: 5px; font-size: larger; display: block;"
 ></code>
+</pre>

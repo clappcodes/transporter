@@ -84,7 +84,7 @@ class RequestStream extends TransformStream<Uint8Array, Uint8Array> {
         console.log("<< Started >>", id);
       },
       transform(chunk, ctrl) {
-        console.log("( transform )", id, chunk);
+        console.log("( transform )", id);
         ctrl.enqueue(chunk);
       },
       cancel(reason) {

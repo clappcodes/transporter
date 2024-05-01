@@ -14,14 +14,16 @@ const result = await esbuild.build({
   // entryPoints: ["https://deno.land/std@0.185.0/bytes/mod.ts"],
   entryPoints: [
     "./mod.ts",
+    "./global.ts",
+    "./playground.ts",
   ],
   outdir: "./.bundle",
   // outfile: "./dist/transporter.js",
   sourcemap: "linked",
   bundle: true,
-  format: "iife",
+  format: "esm",
   platform: "neutral",
-  globalName: "Transporter",
+  // globalName: "Transporter",
   keepNames: true,
   target: ["esnext"],
 });

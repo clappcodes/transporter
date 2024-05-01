@@ -8,17 +8,16 @@ export const makeOptions = (version: string): BuildOptions => ({
   },
   typeCheck: false,
   declaration: "separate",
-  scriptModule: "umd",
+  scriptModule: false, // "umd",
   esModule: true,
   entryPoints: [
-    "./transporter.ts",
-    "./utils.ts",
+    "./mod.ts",
     // "./server.ts",
     // "./app.ts",
     // "./handlers.ts",
   ],
   importMap: "./deno.json",
-  outDir: "./npm",
+  outDir: "./.npm",
 
   mappings: {},
 
