@@ -4,6 +4,6 @@ import { each } from "./each.ts";
 /**
  * Alias for {@link each}.
  */
-export function tap<T>(f: (x: T) => void): Transform<T> {
+export function tap<T>(f: (x: T) => void): Transform<T, T> {
   return each(f);
 }

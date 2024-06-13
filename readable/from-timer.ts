@@ -11,12 +11,17 @@ export function fromTimer<T>(
   chunk: () => T = () => null as T,
 ): Readable<T> {
   let id: number;
+
   return new ReadableStream<T>({
     start(controller) {
-      id = setInterval(() => controller.enqueue(chunk()), ms);
+      id = setInterval(() => {
+        controller.enqueue(chunk());
+      }, ms);
     },
     cancel() {
       clearInterval(id);
     },
   });
 }
+
+export const every = fromTimer;

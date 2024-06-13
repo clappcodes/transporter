@@ -1,0 +1,16 @@
+import "./shims.ts";
+import * as readable from "./readable/mod.ts";
+import * as writable from "./writable/mod.ts";
+import * as transform from "./transform/mod.ts";
+import * as transport from "./transport/mod.ts";
+import * as utils from "./utils.ts";
+import { default as default2 } from "./deno.json" with { type: "json" };
+export {
+  default2 as package,
+  readable,
+  transform,
+  transport,
+  utils,
+  writable
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiLi4vbW9kLnRzIl0sCiAgInNvdXJjZXNDb250ZW50IjogWyIvLyBzaGltc1xuaW1wb3J0IFwiLi9zaGltcy50c1wiO1xuXG4vLyBmdW5jc1xuLy8gZXhwb3J0ICogZnJvbSBcIi4vcmVhZGFibGUvbW9kLnRzXCI7XG4vLyBleHBvcnQgKiBmcm9tIFwiLi93cml0ZWFibGUvbW9kLnRzXCI7XG4vLyBleHBvcnQgKiBmcm9tIFwiLi90cmFuc2Zvcm0vbW9kLnRzXCI7XG5cbmV4cG9ydCAqIGFzIHJlYWRhYmxlIGZyb20gXCIuL3JlYWRhYmxlL21vZC50c1wiO1xuZXhwb3J0ICogYXMgd3JpdGFibGUgZnJvbSBcIi4vd3JpdGFibGUvbW9kLnRzXCI7XG5leHBvcnQgKiBhcyB0cmFuc2Zvcm0gZnJvbSBcIi4vdHJhbnNmb3JtL21vZC50c1wiO1xuZXhwb3J0ICogYXMgdHJhbnNwb3J0IGZyb20gXCIuL3RyYW5zcG9ydC9tb2QudHNcIjtcblxuZXhwb3J0ICogYXMgdXRpbHMgZnJvbSBcIi4vdXRpbHMudHNcIjtcblxuLy8gdHlwZXNcbmV4cG9ydCB0eXBlICogZnJvbSBcIi4vdHlwZXMudHNcIjtcblxuZXhwb3J0IHsgZGVmYXVsdCBhcyBwYWNrYWdlIH0gZnJvbSBcIi4vZGVuby5qc29uXCIgd2l0aCB7IHR5cGU6IFwianNvblwiIH07XG4iXSwKICAibWFwcGluZ3MiOiAiQUFDQSxPQUFPO0FBT1AsWUFBWSxjQUFjO0FBQzFCLFlBQVksY0FBYztBQUMxQixZQUFZLGVBQWU7QUFDM0IsWUFBWSxlQUFlO0FBRTNCLFlBQVksV0FBVztBQUt2QixTQUFvQixXQUFYQSxnQkFBMEIsY0FBYyxLQUFLLEVBQUUsTUFBTSxPQUFPOyIsCiAgIm5hbWVzIjogWyJkZWZhdWx0Il0KfQo=

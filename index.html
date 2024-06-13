@@ -1,12 +1,12 @@
 <script>
 	var DEBUG = true;
 </script>
-<!-- <script type="module" src="/.bundle/global.js"></script> -->
+<script type="module" src="/global.ts"></script>
 
 <!-- <script type="module" src="/global.ts"></script> -->
 <script type="module">
-	// import * as Playground from "./playground.ts";
-	import * as Playground from "./.bundle/playground.js";
+	import * as Playground from "./playground.ts";
+	// import * as Playground from "./.bundle/playground.js";
 
 	Playground.main();
 
@@ -21,13 +21,13 @@
 <h1>transporter</h1>
 <input
 	type="text"
-	id="message"
+	id="input"
 	style="width: 100%; padding: 5px; font-size: larger"
 />
 <hr />
 <pre style="display: block">
 <code
-	id="outgoing"
-	style="background: rgba(0, 0, 0, 0.3); padding: 5px; font-size: larger; display: block;"
+	id="output"
+	style="background: rgba(0, 0, 0, 0.3); color: white; letter-spacing: 0.5em; padding: 15px; font-size: xx-large; display: block;"
 ></code>
 </pre>

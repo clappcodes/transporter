@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { DeferredPromise, log, PipelineStream } from "./utils.ts";
+import { log, PipelineStream } from "./utils.ts";
+import { Promised } from "./utils/Promised.ts";
 
 export class OutgoingStream<
   I = any,
@@ -22,7 +23,7 @@ export class OutgoingStream<
   };
   #writable?: WritableStream<I>;
   ready: Promise<this>;
-  closed: DeferredPromise<unknown>;
+  closed: Promised<unknown>;
   pipeline: PipelineStream<[TransformStream<I, O>, ...TransformStream[]]>;
   readable: ReadableStream<any>;
   // get readable() {
@@ -63,7 +64,7 @@ export class OutgoingStream<
 
     this.id = this.url.searchParams.get("id") || "x" + String(this.idx);
 
-    this.closed = new DeferredPromise();
+    this.closed = new Promised();
     this.pipeline = new PipelineStream(transformers);
 
     this.readable = new ReadableStream({

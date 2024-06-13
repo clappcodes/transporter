@@ -1,16 +1,4 @@
-export function ReadableStreamFrom<R>(
-  iterator: AsyncIterable<R> | Iterable<R | PromiseLike<R>>,
-) {
-  return new ReadableStream<R>({
-    async pull(controller) {
-      for await (const chunk of iterator) {
-        controller.enqueue(chunk);
-      }
-
-      controller.close();
-    },
-  });
-}
+import { from } from "./readable/from.ts";
 
 export async function* ReadableStreamIterator<R>(this: ReadableStream<R>) {
   const reader = this.getReader();
@@ -27,10 +15,10 @@ export async function* ReadableStreamIterator<R>(this: ReadableStream<R>) {
   }
 }
 
-if (!Reflect.has(ReadableStream, "from")) {
+if (!("from" in ReadableStream)) {
   console.log("(shim) ReadableStream.from");
   Object.defineProperty(ReadableStream, "from", {
-    value: ReadableStreamFrom,
+    value: from,
   });
 }
 

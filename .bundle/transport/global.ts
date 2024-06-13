@@ -1,0 +1,10 @@
+import { TransportApp } from "./app.ts";
+import { $fetch } from "./fetch.ts";
+const _global = {
+  TransportApp,
+  // TransportStream,
+  $fetch
+};
+Object.assign(globalThis, _global);
+console.log("(global)", Object.keys(_global));
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiLi4vLi4vdHJhbnNwb3J0L2dsb2JhbC50cyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsiaW1wb3J0IHsgVHJhbnNwb3J0QXBwIH0gZnJvbSBcIi4vYXBwLnRzXCI7XG4vLyBpbXBvcnQgeyBUcmFuc3BvcnRTdHJlYW0gfSBmcm9tIFwiLi9zdHJlYW0udHNcIjtcbmltcG9ydCB7ICRmZXRjaCB9IGZyb20gXCIuL2ZldGNoLnRzXCI7XG5cbmNvbnN0IF9nbG9iYWwgPSB7XG4gIFRyYW5zcG9ydEFwcCxcbiAgLy8gVHJhbnNwb3J0U3RyZWFtLFxuICAkZmV0Y2gsXG59O1xuXG5PYmplY3QuYXNzaWduKGdsb2JhbFRoaXMsIF9nbG9iYWwpO1xuY29uc29sZS5sb2coXCIoZ2xvYmFsKVwiLCBPYmplY3Qua2V5cyhfZ2xvYmFsKSk7XG4iXSwKICAibWFwcGluZ3MiOiAiQUFBQSxTQUFTLG9CQUFvQjtBQUU3QixTQUFTLGNBQWM7QUFFdkIsTUFBTSxVQUFVO0FBQUEsRUFDZDtBQUFBO0FBQUEsRUFFQTtBQUNGO0FBRUEsT0FBTyxPQUFPLFlBQVksT0FBTztBQUNqQyxRQUFRLElBQUksWUFBWSxPQUFPLEtBQUssT0FBTyxDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=

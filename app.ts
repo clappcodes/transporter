@@ -128,8 +128,8 @@ function createServer(
   options?: Partial<Deno.ServeTlsOptions>,
 ): Deno.HttpServer {
   return Deno.serve({
-    key: Deno.env.get("HTTPS_KEY"),
-    cert: Deno.env.get("HTTPS_CERT"),
+    key: Deno.env.get("KEY"),
+    cert: Deno.env.get("CERT"),
     port: Number(Deno.env.get("PORT")) || 8000,
     hostname: Deno.env.get("HOSTNAME") || "localhost",
     onListen({ port, hostname }) {

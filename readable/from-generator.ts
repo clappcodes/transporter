@@ -13,3 +13,10 @@ type GeneratorFunc<T> = () => IterableIterator<T>;
 export function fromGenerator<T>(f: GeneratorFunc<T>): Readable<T> {
   return fromIterable(f());
 }
+
+function* x() {
+  yield "one";
+  yield "two";
+}
+
+fromGenerator(x);

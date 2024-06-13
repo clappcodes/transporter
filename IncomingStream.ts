@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { DeferredPromise, log, PipelineStream } from "./utils.ts";
+import { log, PipelineStream } from "./utils.ts";
+import { Promised } from "./utils/Promised.ts";
 
 /**
  * Represents an incoming stream of data.
@@ -36,7 +37,7 @@ export class IncomingStream<I extends Uint8Array = Uint8Array, O = any> {
   /**
    * The deferred promise that resolves when the stream is closed.
    */
-  closed: DeferredPromise<unknown> = new DeferredPromise();
+  closed: Promised<unknown> = new Promised();
 
   /**
    * The name of the stream.

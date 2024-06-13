@@ -7,8 +7,9 @@ import "./shims.ts";
 // export * from "./transform/mod.ts";
 
 export * as readable from "./readable/mod.ts";
-export * as writable from "./writeable/mod.ts";
+export * as writable from "./writable/mod.ts";
 export * as transform from "./transform/mod.ts";
+export * as transport from "./transport/mod.ts";
 
 export * as utils from "./utils.ts";
 

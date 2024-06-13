@@ -1,3 +1,5 @@
+import { readable, transform } from "../mod.ts";
+
 /**
  * Retrieves the body of a request or response as a ReadableStream.
  * If the body is already a ReadableStream, it is returned as is.
@@ -9,9 +11,15 @@
  */
 export function fromBody(
   input: Request | Response,
-): ReadableStream<Uint8Array> {
-  if (input.body instanceof ReadableStream) {
-    return input.body;
+): ReadableStream<string> {
+  const isRequest = input instanceof Request;
+  const isResponse = input instanceof Response;
+
+  if (isRequest || isResponse) {
+    if (input.body) {
+      return readable.from(input.body)
+        .pipeThrough(transform.decode());
+    }
   }
 
   throw new TypeError(`Invalid body type: ${typeof input.body}`);

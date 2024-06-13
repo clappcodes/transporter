@@ -1,4 +1,5 @@
-import { IncomingStream, OutgoingStream } from "./transporter.ts";
+import { IncomingStream } from "./IncomingStream.ts";
+import { OutgoingStream } from "./OutgoingStream.ts";
 
 export class DOMStream extends TransformStream<string, string> {
   constructor(sender: string) {
