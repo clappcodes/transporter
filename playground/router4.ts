@@ -1,4 +1,4 @@
-import { JSONTransporter, TextTransportStream } from "../transport/mod.ts";
+import { JSONTransportStream, TextTransportStream } from "../transport/mod.ts";
 import {
   RequestTransformerStream,
   Transporter,
@@ -8,12 +8,12 @@ import {
   EventSourceDecoderStream,
   EventSourceEncoderStream,
   EventSourceMessage,
-} from "../transport/ess/mod.ts";
-import { decode, encode } from "../transport/ess/utils.ts";
-import { PipeStream } from "../transport/PipeStream.ts";
-import { useCors } from "./useCors.ts";
-import { TextTransporter } from "../transport/TextTransporter.ts";
-import { EventSourceTransporter } from "../transport/EventSourceTransporter.ts";
+} from "../transporter/ess/mod.ts";
+import { decode, encode } from "../transporter/ess/utils.ts";
+import { PipeStream } from "../transporter/PipeStream.ts";
+import type { useCors } from "./useCors.ts";
+import { TextTransportStream } from "../transporter/TextTransportStream.ts";
+import { EventSourceTransportStream } from "../transporter/EventSourceTransportStream.ts";
 
 export default new DevApp()
   .use("/ess-1", (request) => {
@@ -65,13 +65,13 @@ export default new DevApp()
       new PipeStream(
         transform.decode(),
         new Transporter(req),
-        transform.upperCase(),
+        transform.toUpperCase(),
         transform.encode(),
       ),
   )
   .use("/upper3", (req) =>
-    new TextTransporter(req, [
-      transform.upperCase(),
+    new TextTransportStream(req, [
+      transform.toUpperCase(),
       {
         transform(chunk, ctrl) {
           if (chunk === "HI") {
@@ -84,7 +84,7 @@ export default new DevApp()
       transform.tap(console.log),
     ]))
   .use("est-1", (req) =>
-    new EventSourceTransporter(req, [
+    new EventSourceTransportStream(req, [
       transform.map((m) => ({
         ...m,
         comment: "at EventSourceTransporter",
@@ -92,13 +92,13 @@ export default new DevApp()
       transform.tap(console.log),
     ]))
   .use("/json-1", (req) =>
-    new JSONTransporter(req, [
+    new JSONTransportStream(req, [
       transform.map((o) => Object.assign(o, { xkey: new Date() })),
       transform.tap(console.log),
     ]))
   .use("/json-chat", (req) => {
-    const reqTS = JSONTransporter.decoder<{ uid: string; msg: string }>();
-    const resTS = JSONTransporter.encoder<{ uid: string; msg: string }>();
+    const reqTS = JSONTransportStream.decoder<{ uid: string; msg: string }>();
+    const resTS = JSONTransportStream.encoder<{ uid: string; msg: string }>();
 
     console.log("json-chat -req", req);
 
@@ -129,4 +129,12 @@ export default new DevApp()
 
     return new Response(resTS.readable);
   })
-  .use("pipe1", (await import("./pipe1.ts")).default);
+  .use("pipe2", (await import("./pipe1.ts")).default)
+  .use("/uppercase", (req) => {
+    const duplex = new PipeStream<Uint8Array, Uint8Array>(
+      new TextDecoderStream(),
+      transform.toUpperCase(),
+      new TextEncoderStream(),
+    );
+    return new Response(duplex.readable);
+  });

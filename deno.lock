@@ -19,8 +19,10 @@
       "jsr:@std/path@^0.223.0": "jsr:@std/path@0.223.0",
       "jsr:@std/testing": "jsr:@std/testing@0.222.1",
       "npm:@clappcodes/transporter": "npm:@clappcodes/transporter@0.1.1",
+      "npm:@ungap/with-resolvers": "npm:@ungap/with-resolvers@0.1.0",
       "npm:esbuild@0.20.2": "npm:esbuild@0.20.2",
-      "npm:observables-with-streams": "npm:observables-with-streams@0.6.1"
+      "npm:observables-with-streams": "npm:observables-with-streams@0.6.1",
+      "npm:urlpattern-polyfill": "npm:urlpattern-polyfill@10.0.0"
     },
     "jsr": {
       "@luca/esbuild-deno-loader@0.10.3": {
@@ -190,6 +192,10 @@
         "integrity": "sha512-N49X4lJX27+l9jbLKSqZ6bKNjzQvHaT8IIFUy+YIqmXQdjYCToGWwOItDrfby14c78aDd5NHQl29xingXfCdLQ==",
         "dependencies": {}
       },
+      "@ungap/with-resolvers@0.1.0": {
+        "integrity": "sha512-g7f0IkJdPW2xhY7H4iE72DAsIyfuwEFc6JWc2tYFwKDMWWAF699vGjrM348cwQuOXgHpe1gWFe+Eiyjx/ewvvw==",
+        "dependencies": {}
+      },
       "esbuild@0.20.2": {
         "integrity": "sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==",
         "dependencies": {
@@ -220,6 +226,10 @@
       },
       "observables-with-streams@0.6.1": {
         "integrity": "sha512-p7T567fNF9NQNDL9yszjPGtVZgqSkhFzjoy9wXO6B7JBPEDbE9TVSzPu+Oa7J+mkeM5OWzXxrMST8kdyCr878w==",
+        "dependencies": {}
+      },
+      "urlpattern-polyfill@10.0.0": {
+        "integrity": "sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==",
         "dependencies": {}
       }
     }
@@ -573,6 +583,10 @@
     "https://deno.land/x/wasmbuild@0.14.1/loader.ts": "d98d195a715f823151cbc8baa3f32127337628379a02d9eb2a3c5902dbccfc02",
     "https://deno.land/x/wasmbuild@0.15.1/cache.ts": "9d01b5cb24e7f2a942bbd8d14b093751fa690a6cde8e21709ddc97667e6669ed",
     "https://deno.land/x/wasmbuild@0.15.1/loader.ts": "8c2fc10e21678e42f84c5135d8ab6ab7dc92424c3f05d2354896a29ccfd02a63",
-    "https://localhost:8016/app/serve.ts": "06d38bcf12756c844dd9092722016f6fe333d19eb98a17c1f763c94da79411ed"
+    "https://localhost:8000/transporter/DuplexRequest.ts": "1715b11211fe203e1ecfc3b8c3884f0d05015515055bb75ff72b9cd42ce386b0",
+    "https://localhost:8000/transporter/contstants.ts": "fc8a9bbf66f8d729608dd2140d7b7aa9c96167c4064aa96b3e370ae7892e5c00",
+    "https://localhost:8000/transporter/duplexHandler.ts": "ad4bcd4a40fd952b6c552a3d7c1f382bf1c13dfd8ce32106430e3909ae18cd02",
+    "https://localhost:8000/transporter/utils/Promised.ts": "634c5420c8219757beb4a852eceb34b73c0930dc3eb2152d5a459797d6316ab9",
+    "https://localhost:8000/transporter/utils/is.ts": "b64d996bf1ef0a35d328fe06400a7893013e1ffab18e4f7c2278372fb4ef13f3"
   }
 }

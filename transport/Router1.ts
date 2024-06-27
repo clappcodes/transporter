@@ -2,7 +2,7 @@
 import { delay } from "../utils.ts";
 import { Promised } from "../utils/Promised.ts";
 import { mergePath } from "../utils/app.ts";
-import { Route } from "./app/Route.ts";
+import { Route } from "../app/Route.ts";
 import {
   METHOD,
   RouteArr,

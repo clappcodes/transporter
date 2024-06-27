@@ -1,6 +1,6 @@
 import "../global.ts";
-import { duplex } from "../transport/mod.ts";
-import { useCors } from "./useCors.ts";
+import { duplexHandler } from "../transport/mod.ts";
+import type { useCors } from "./useCors.ts";
 
 Deno.serve(
   {
@@ -8,11 +8,11 @@ Deno.serve(
     cert: Deno.env.get("CERT"),
     port: 8085,
   },
-  duplex(
+  duplexHandler(
     (req) => {
       const ts = new Transporter(req, [
         transform.decode(),
-        transform.upperCase(),
+        transform.toUpperCase(),
         transform.tap(console.log),
         transform.encode(),
       ]);

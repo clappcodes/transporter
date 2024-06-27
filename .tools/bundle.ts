@@ -15,7 +15,7 @@ const result = await esbuild.build({
   entryPoints: [
     "./mod.ts",
     "./global.ts",
-    "./playground.ts",
+    // "./playground.ts",
   ],
   outdir: "./.bundle",
   // outfile: "./dist/transporter.js",

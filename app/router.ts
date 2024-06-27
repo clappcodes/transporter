@@ -1,97 +1,293 @@
-import { blue, yellow } from "../colors.ts";
-import type { Context } from "../types.ts";
-import type { Serve } from "../transport/types.ts";
+import { mergePath } from "../utils/app.ts";
+import { Route, type RouteModule } from "./Route.ts";
+import { METHOD, type RouteFetch } from "./RoutesInit.ts";
+import { Context, MergePath } from "./types.ts";
+import { colors } from "../utils.ts";
+import isPlainObject from "../utils/is-plain-object.ts";
+import { readable } from "../mod.ts";
+import { Uint8ArrayTransformStream } from "../transform/mod.ts";
 
-export default {
-  async fetch(request: Request, context: Context) {
-    const matched = this.route?.filter((layer) => {
-      if (layer.method && context.method !== layer.method.toLowerCase()) {
-        return false;
-      }
+type Options = Omit<RouteModule, "method" | "fetch">;
 
-      layer.route = layer.route || {
-        pathname: "*",
-        search: "*",
-      };
+export class Router<
+  O extends Options = Options,
+  P extends string & O["path"] = `${O["path"]}`,
+> extends Route {
+  routes: Route[] = [];
 
-      const pattern = typeof layer.route === "string"
-        ? new URLPattern(layer.route, request.url)
-        : layer.route instanceof URLPattern
-        ? layer.route
-        : new URLPattern(layer.route);
-
-      const match = pattern.exec(context.url);
-
-      return layer.match = match || undefined;
-    }) || [];
-
-    let response: Response | undefined | void;
-
-    console.groupCollapsed(
-      "[" + blue(request.method) + "] " + yellow(request.url),
+  constructor(
+    options?: Omit<RouteModule, "method" | "fetch">,
+  ) {
+    const { path = "/", ...rest } = options || {};
+    super(
+      METHOD.ANY,
+      path,
+      (req, ctx) => this.#fetch(req, ctx),
+      rest,
     );
+  }
 
-    for (const layer of matched) {
-      if (response instanceof Response) {
-        break;
+  base<B extends string>(path: B) {
+    const mergedPath = mergePath(path, this.path) as `${MergePath<B, P>}`;
+    const router = new Router({ ...this.options, path: mergedPath });
+
+    for (const route of this.routes) {
+      router.use(route);
+    }
+
+    return router;
+  }
+
+  request(
+    input: URL | RequestInfo,
+    init?: RequestInit | undefined,
+  ) {
+    if (input instanceof Request) {
+      if (init !== undefined) {
+        input = new Request(input, init) as Request;
       }
 
-      if (typeof layer.fetch === "function") {
-        context.path = layer.match?.pathname.input;
-        context.param = layer.match?.pathname.groups!;
-        context.route = layer.route;
+      const context = new Context({
+        url: new URL(input.url),
+        method: input.method as METHOD,
+      });
 
-        try {
-          response = await layer.fetch(request, context);
-          context.response = response;
-          break;
-          //   console.log({
-          //     url: context.url.toString(),
-          //     path: context.path,
-          //     route: context.route,
-          //     param: context.param,
-          //     error: context.error,
-          //     layer: layer,
-          //     response: context.response,
-          //   });
-        } catch (e) {
-          context.error = e;
+      Object.assign(input, { context });
 
-          //   console.log({
-          //     url: context.url.toString(),
-          //     path: context.path,
-          //     route: context.route,
-          //     param: context.param,
-          //     error: context.error,
-          //     layer: layer,
-          //     response: context.response,
-          //   });
+      return this.fetch(input as Request, context);
+    }
 
-          console.groupEnd();
-          throw e;
+    input = input.toString();
+    const path = /^https?:\/\//.test(input)
+      ? input
+      : `http://localhost${mergePath("/", input)}`;
+    const request = new Request(path, init);
+
+    const context = new Context({
+      url: new URL(request.url),
+      method: request.method as METHOD,
+      status: 200,
+      headers: new Headers(),
+    });
+
+    Object.assign(request, { context });
+
+    return this.fetch(request, context);
+  }
+
+  async #fetch(request: Request, context: Context) {
+    context = context instanceof Context ? context : new Context({
+      method: METHOD.ANY,
+      url: new URL(request.url),
+      base: this.path,
+      router: this,
+    });
+
+    // request.context = request.context || context || Object.create(null);
+    // context = request.context;
+    context.base = mergePath(context.base || "", context.router?.path || "");
+    context.router = this;
+
+    for (const route of this.routes) {
+      if (route.method === METHOD.ANY || request.method === route.method) {
+        const match = route.match(
+          request.method as METHOD,
+          request.url,
+          mergePath(context.base || "", this.path),
+        );
+
+        if (match) {
+          context.params = match;
+          context.route = route;
+
+          const response = await route.fetch(
+            request,
+            context,
+          );
+
+          if (response instanceof Response) {
+            return response;
+          }
+
+          if (typeof response !== "undefined") {
+            const responseInit = {
+              status: context.status,
+              headers: context.headers,
+            };
+
+            if (isPlainObject(response)) {
+              return Response.json(response, responseInit);
+            } else if (typeof response === "string") {
+              return new Response(response, responseInit);
+            } else {
+              return new Response(
+                readable.from(response).pipeThrough(
+                  new Uint8ArrayTransformStream(),
+                ),
+                responseInit,
+              );
+            }
+          }
         }
       }
     }
-    // console.log(context);
-    console.groupEnd();
 
-    if (response instanceof Response) {
-      return response;
+    // return new Response("NOT FOUND", {
+    //   status: 404,
+    //   headers: context.headers,
+    // });
+  }
+
+  use<X extends P = P, R extends Route | RouteModule = Route>(
+    route: R,
+  ): Router<O, X>;
+
+  use<X extends P = P, F extends RouteFetch = RouteFetch>(
+    fetch: F,
+  ): Router<O, X>;
+
+  // use<
+  //   X extends P = P,
+  //   Path extends string = string,
+  //   H extends RouteFetch | Route = RouteFetch,
+  // >(
+  //   path: Path,
+  //   handle: H,
+  // ): Router<MergePath<X, Path>>;
+
+  use<
+    X extends P = P,
+    Path extends string = string,
+    H extends (RouteFetch | RouteModule | Route)[] = RouteFetch[],
+  >(
+    path: Path,
+    ...handlers: H
+  ): Router<O, X>;
+
+  use<
+    X extends P = P,
+    H extends (RouteFetch | RouteModule | Route)[] = RouteFetch[],
+  >(
+    ...handlers: H
+  ): Router<O, X>;
+
+  use<X extends string, H extends RouteFetch | RouteModule | Route>(
+    path: X | H,
+    handle?: H,
+  ) {
+    if (typeof path === "string" && handle) {
+      const route = (handle instanceof Router)
+        ? handle.base(path)
+        : (handle instanceof Route)
+        ? handle.route(path)
+        : typeof handle === "function"
+        ? new Route(
+          Route.ANY,
+          path,
+          handle,
+        )
+        : new Route(
+          handle.method as METHOD || METHOD.ANY,
+          handle.path || "*",
+          handle.fetch,
+        );
+
+      this.routes.push(route);
+    } else if (typeof path !== "string") {
+      const handlers = Array.from(arguments) as H[];
+      for (const handle of handlers) {
+        // handle = path;
+        if (handle instanceof Route) {
+          this.routes.push(handle);
+        } else {
+          this.routes.push(
+            typeof handle === "function"
+              ? new Route(METHOD.ANY, "*", handle)
+              : new Route(
+                handle.method as METHOD || METHOD.ANY,
+                handle.path || "*",
+                handle.fetch,
+              ),
+          );
+        }
+      }
     }
-  },
-  onError(error: Error) {
-    console.log("(onError)", error);
-    return new Response(
-      `<pre style="margin: 10%;font-size:16px">${error.stack}</pre>`,
-      {
-        headers: {
-          "Content-Type": "text/html",
-        },
-        status: 500,
-      },
+
+    return this;
+  }
+
+  get<X extends string, H extends RouteFetch | Route>(
+    path: X,
+    handle: H,
+  ): Router<O, P> {
+    if (handle instanceof Route) {
+      this.routes.push(handle.route(path));
+    } else {
+      this.routes.push(new Route(Route.GET, path, handle));
+    }
+    return this;
+  }
+
+  match(
+    input: string,
+    base?: string | undefined,
+  ): Record<string, unknown> | undefined {
+    const baseURL = /^https?:\/\//.test(input) ? undefined : `http://localhost`;
+
+    // const res = this.#pattern.exec(input, baseURL)?.pathname.groups;
+    const match = new URLPattern({
+      pathname: mergePath(base || "", this.path, "/*"),
+    }).exec(input, baseURL)?.pathname.groups;
+
+    const ident = "\n     @ ";
+    console.log(
+      `${ident}${colors.blue(this.constructor.name)}( [${
+        colors.gray(base || "/")
+      }${colors.blue(this.path)}] ).match( ${input} ) =>`,
+      match,
     );
-  },
-  onListen(addr) {
-    console.log("(onListen)", addr);
-  },
-} as Serve;
+    return match;
+  }
+}
+
+// const logger = <T extends string>(tag: T): RouteFetch =>
+//   function logger(req) {
+//     console.log(
+//       `(${tag})`,
+//       req.url,
+//       req.params,
+//       //   "\n",
+//       //   req.context.router,
+//     );
+//   };
+
+// const user = new Router("/user")
+//   .get("/", () => "User Home")
+//   .get("/:id", (req) => `User id=${req.params.id}`)
+//   .use(
+//     "/x",
+//     new Router("/posts").get(
+//       "/:post_id",
+//       (req) => "User Post " + req.url,
+//     ),
+//   )
+//   .use("/y", new Route(Route.ANY, "/test", () => "y test"));
+
+// const blog = new Router("/blog")
+//   //   .use(logger("blog"))
+//   .use(user)
+//   .get("/posts", () => "Blog Posts")
+//   .get("/post/:id", (req) => "Blog Post #" + req.params.id)
+//   .use(user.base("/admin"));
+// // .use();
+
+// const app = new Router("/test")
+//   .use(logger("test"))
+//   .use("/about1", () => "Hola")
+//   //   .base("/xxx")
+//   .use("/about2", () => "Hola");
+// //   .use("xx", blog);
+
+// // const res = await blog.request("/test/xx/blog/posts");
+
+// console.log("res", await blog.request("/blog/admin/user/y/test"));

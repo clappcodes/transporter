@@ -1,5 +1,5 @@
-import { Route } from "./app/Route.ts";
-import { METHOD, RouteArr, RouteMethod } from "./RoutesInit.ts";
+import type { Route } from "./app/Route.ts";
+import { METHOD, type RouteArr, type RouteMethod } from "./RoutesInit.ts";
 
 export async function routerFromPath(root: string | URL) {
   if (typeof globalThis.Deno === "undefined") {

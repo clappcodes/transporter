@@ -1,7 +1,11 @@
-import { EventSourceDecoderStream } from "../transport/ess/EventSourceDecoderStream.ts";
-import { EventSourceEncoderStream } from "../transport/ess/EventSourceEncoderStream.ts";
+import { EventSourceDecoderStream } from "../transporter/ess/EventSourceDecoderStream.ts";
+import { EventSourceEncoderStream } from "../transporter/ess/EventSourceEncoderStream.ts";
+import type { EventSourceMessage } from "../transporter/ess/EventSourceMessage.ts";
 
-const encoder = () => new EventSourceEncoderStream();
-const decoder = () => new EventSourceDecoderStream();
+const encoder = (): EventSourceEncoderStream<EventSourceMessage, string> =>
+    new EventSourceEncoderStream();
+
+const decoder = (): EventSourceDecoderStream<string, EventSourceMessage> =>
+    new EventSourceDecoderStream();
 
 export const sse = { encoder, decoder };

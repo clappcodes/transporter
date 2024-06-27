@@ -2,7 +2,7 @@ import {
   JSONDecoderStream,
   JSONEncoderStream,
   PipeStream,
-  Transformers,
+  type Transformers,
 } from "../transport/mod.ts";
 import { isTransformStream } from "../utils.ts";
 
@@ -30,13 +30,14 @@ class JSONStream extends PipeStream<JSONSchema, JSONSchema> {
 }
 
 class JSONRequestStream extends PipeStream<Uint8Array, JSONSchema> {
+  finished: Promise<void> | undefined;
   constructor(public request: Request) {
     super(
       new TextDecoderStream(),
       new JSONDecoderStream(),
       writeMessage(">"),
     );
-    request.body?.pipeTo(this.writable);
+    this.finished = request.body?.pipeTo(this.writable);
   }
 }
 
@@ -63,6 +64,7 @@ class JSONTransportStream extends Response {
   read: (cb: (chunk: JSONSchema) => void) => Promise<void>;
 
   send: (msg: string) => Promise<void>;
+  finished: Promise<void> | undefined;
 
   constructor(public request: Request, public responseInit?: ResponseInit) {
     const _request = new JSONRequestStream(request);
@@ -71,7 +73,7 @@ class JSONTransportStream extends Response {
     super(_response.readable, responseInit);
 
     this.headers.set("content-type", "text/event-stream");
-
+    this.finished = _request.finished;
     this.writable = _response.writable;
     this.write = _response.write.bind(_response);
     this.send = _response.send.bind(_response);
@@ -101,6 +103,9 @@ export const jsonStream =
     return res;
   };
 
+// @ts-ignore .
+const clients: JSONTransportStream[] = globalThis.clients = [];
+
 export default {
   init(url: string = "/pipe1") {
     const ts = new JSONStream(url);
@@ -110,14 +115,19 @@ export default {
 
     return ts;
   },
-  fetch3: jsonStream((stream) =>
-    stream.pipe(transform.tap(console.warn)).pipeTo(stream.writable)
-  ),
   fetch: jsonStream((stream) => {
+    stream.read(console.warn);
+    stream.write({ msg: "papap", uid: "baz" });
+  }),
+  fetch4: jsonStream((stream) => {
     // stream.pipeTo(stream);
 
+    stream.finished?.finally(() => {
+      console.log("(jsonStream) finished");
+    });
+
     // @ts-ignore .
-    globalThis.p1 = stream;
+    clients.push(stream);
 
     stream.read((o) => {
       if (o.uid === "xxx") {
@@ -127,6 +137,8 @@ export default {
     });
 
     stream.write({ uid: "deno", msg: "Hi" });
+
+    setInterval(() => stream.write({ uid: "deno", msg: "ping" }), 3000);
 
     return stream;
   }),

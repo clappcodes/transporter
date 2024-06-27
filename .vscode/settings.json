@@ -1,4 +1,6 @@
 {
   "deno.enable": true,
-  "deno.cacheOnSave": true
+  "deno.cacheOnSave": true,
+  "javascript.suggest.completeFunctionCalls": true,
+  "typescript.suggest.completeFunctionCalls": true
 }

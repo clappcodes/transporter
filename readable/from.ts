@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import isPlainObject from "../utils/is-plain-object.ts";
 
 type GeneratorFunc<T> = () => IterableIterator<T>;
@@ -39,10 +38,13 @@ export function from<R>(
   return readableFromIterable(input);
 }
 
-export const of = <T extends unknown[]>(...args: T) =>
-  from(args as T[number][]);
+export const of = <T extends unknown[]>(
+  ...args: T
+): ReadableStream<T[number]> => from(args as T[number][]);
 
-export function readableFromIterable<T>(iterable: FromIterable<T>) {
+export function readableFromIterable<T>(
+  iterable: FromIterable<T>,
+): ReadableStream<T> {
   if (typeof iterable === "function") {
     iterable = iterable();
   }
@@ -57,7 +59,7 @@ export function readableFromIterable<T>(iterable: FromIterable<T>) {
   });
 }
 
-export function readableFromObject<T>(input: T) {
+export function readableFromObject<T>(input: T): ReadableStream<string> {
   if (isPlainObject(input)) {
     const str = JSON.stringify(input, null, 2);
     const lines = str.split("\n");

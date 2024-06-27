@@ -1,5 +1,5 @@
-import { Route } from "../transport/app/Route.ts";
-import { duplex } from "../transport/handle.ts";
+import { Route } from "../app/Route.ts";
+import { duplexHandler } from "../transporter/duplexHandler.ts";
 import { delay } from "../utils.ts";
 
 const helloWorld = tapp("/hello-world")
@@ -20,7 +20,7 @@ const helloWorld = tapp("/hello-world")
 // helloWorld.routes
 
 const duplexStream = tapp("/x").use(
-  duplex((req) =>
+  duplexHandler((req) =>
     new Response(
       readable.fromTimer(500, Date.now).pipeThrough(transform.toUint8Array()),
     )

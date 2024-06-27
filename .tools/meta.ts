@@ -2,7 +2,7 @@ import type { BuildOptions } from "https://deno.land/x/dnt@0.40.0/mod.ts";
 
 export const makeOptions = (version: string): BuildOptions => ({
   test: false,
-  shims: {},
+  shims: { undici: "dev" },
   compilerOptions: {
     lib: ["ESNext", "DOM", "DOM.Iterable"],
   },
@@ -11,7 +11,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   scriptModule: false, // "umd",
   esModule: true,
   entryPoints: [
-    "./mod.ts",
+    "./mod.node.ts",
     // "./server.ts",
     // "./app.ts",
     // "./handlers.ts",
@@ -24,7 +24,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   package: {
     name: "@clappcodes/transporter",
     version,
-    description: "Duplex Web Stream",
+    description: "Transport Web Stream",
     license: "MIT",
     homepage: "https://github.com/clappcodes/transporter",
     repository: {

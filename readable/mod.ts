@@ -16,7 +16,7 @@ export function readable<T>(
     | ((controller: ReadableStreamDefaultController<T>) => void)
     | undefined,
   rest?: Omit<UnderlyingDefaultSource<T>, "start">,
-) {
+): ReadableStream<T> {
   return new ReadableStream<T>({
     start,
     ...rest,

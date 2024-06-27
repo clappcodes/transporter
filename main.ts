@@ -4,11 +4,11 @@ import * as mod from "./mod.dev.ts";
 //
 import { idKey } from "./utils.ts";
 import { Promised } from "./utils/Promised.ts";
-import { from, fromBody, fromTimer } from "./readable/mod.ts";
-import { decode, encode, log, map, pipe, toString } from "./transform/mod.ts";
-import { response } from "./writable/mod.ts";
-import { subscribe } from "./writable/subscribe.ts";
-import { readable, transform, writable } from "./mod.ts";
+import { type from, fromBody, fromTimer } from "./readable/mod.ts";
+import { decode, encode, type log, type map, type pipe, toString } from "./transform/mod.ts";
+import type { response } from "./writable/mod.ts";
+import type { subscribe } from "./writable/subscribe.ts";
+import { type readable, transform, type writable } from "./mod.ts";
 
 const app = new App();
 app.use(App.static());

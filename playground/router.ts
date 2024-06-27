@@ -9,7 +9,7 @@
 //   onListen() {},
 // });
 
-import { tapp, TappOptions } from "../transport/Tapp.ts";
+import { tapp, type TappOptions } from "../transport/Tapp.ts";
 
 // export default {
 //   port: 8001,

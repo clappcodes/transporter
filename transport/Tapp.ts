@@ -1,8 +1,8 @@
 import { mergePath } from "../utils/app.ts";
-import { METHOD, RouteArr } from "./RoutesInit.ts";
-import { Route } from "./app/Route.ts";
+import { METHOD, type RouteArr } from "./RoutesInit.ts";
+import type { Route } from "./app/Route.ts";
 import { Router } from "./Router1.ts";
-import { type RouterEvents, RoutesInit } from "./RoutesInit.ts";
+import type { RouterEvents, RoutesInit } from "./RoutesInit.ts";
 import type { Context, MergePath, Request, ServeHandler } from "./types.ts";
 
 export interface TappOptions extends RouterEvents, Partial<TApp.Serve> {

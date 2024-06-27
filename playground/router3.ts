@@ -1,8 +1,8 @@
-import Static from "../app/static.ts";
+import Static from "../app/handlers/static.ts";
 import { send } from "../transport/app/Methods.ts";
-import { App, ESS } from "../transport/mod.ts";
-import { EventSourceMessage } from "../transport/ess/EventSourceMessage.ts";
-import { EventSourceEncoderStream } from "../transport/ess/mod.ts";
+import { App, type ESS } from "../transport/mod.ts";
+import type { EventSourceMessage } from "../transporter/ess/EventSourceMessage.ts";
+import { EventSourceEncoderStream } from "../transporter/ess/mod.ts";
 
 const dup = (req: Request) => {
   const [s1, s2] = req.body!.tee();

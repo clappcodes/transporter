@@ -1,8 +1,8 @@
 import { resolve } from "https://deno.land/std@0.224.0/path/resolve.ts";
 import "./global.ts";
-import type { Context, Request } from "./transport/types.ts";
+import type { Context, Request, Serve } from "./app/types.ts";
 import isPlainObject from "./utils/is-plain-object.ts";
-import { Route } from "./transport/app/Route.ts";
+import { Route } from "./app/Route.ts";
 
 export async function serve(specifier: string) {
   const modPath = resolve(specifier);
@@ -10,7 +10,7 @@ export async function serve(specifier: string) {
 
   Object.assign(globalThis, { serveMod: mod, modPath });
 
-  const m = mod.default as TApp.Serve | Route;
+  const m = mod.default as Serve | Route;
   const module = m instanceof Route ? m.options : m;
 
   const options: Deno.ServeOptions | Deno.ServeTlsOptions = {
